@@ -8,28 +8,41 @@ import java.util.List;
  */
 public class ParkingLot {
 
-    private int availableParkingSlot = 2;
+    private int availableParkingSlot;
     private List<Token> tokenList;
+    List<ParkingLotListener> listeners;
+
+    public void addListener(ParkingLotListener parkingLotListener) {
+        this.listeners.add(parkingLotListener);
+    }
 
     public ParkingLot(int availableParkingSlot) {
         this.availableParkingSlot = availableParkingSlot;
         tokenList = new ArrayList(availableParkingSlot);
+        listeners = new ArrayList();
     }
 
     public Token park() {
         if (this.availableParkingSlot == 0)
             return null;
         availableParkingSlot--;
+        if (this.availableParkingSlot == 0){
+            if (listeners != null)
+                notifyParkingLotFull();
+        }
         Token token = new Token();
         tokenList.add(token);
         return token;
     }
 
+    private void notifyParkingLotFull() {
+        listeners.forEach(ParkingLotListener::onParkingLotIsFull);
+    }
+
     public boolean unPark(Token parkingToken) {
         if (parkingToken == null) return false;
-        if (tokenList.contains(parkingToken)) {
+        if (tokenList.remove(parkingToken)) {
             availableParkingSlot++;
-            tokenList.remove(parkingToken);
             return true;
         }
         return false;
@@ -40,5 +53,9 @@ public class ParkingLot {
         public Token() {
 
         }
+    }
+
+    public interface ParkingLotListener {
+        void onParkingLotIsFull();
     }
 }

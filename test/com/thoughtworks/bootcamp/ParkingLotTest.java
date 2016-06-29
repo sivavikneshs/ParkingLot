@@ -4,6 +4,9 @@ import org.junit.*;
 
 import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by kabdul on 6/28/16.
@@ -40,4 +43,26 @@ public class ParkingLotTest {
         assertFalse(parkingLot.unPark(null));
         assertFalse(parkingLot.unPark(unParkedToken));
     }
+
+    @Test
+    public void shouldOneObserverBeNotifiedWhenEventOccurs() {
+        ParkingLot parkingLot = new ParkingLot(1);
+        ParkingLot.ParkingLotListener owner =  mock(ParkingLot.ParkingLotListener.class);
+        parkingLot.addListener(owner);
+        parkingLot.park();
+        verify(owner, times(1)).onParkingLotIsFull();
+    }
+
+    @Test
+    public void shouldMultipleObserverBeNotifiedWhenEventOccurs() {
+        ParkingLot parkingLot = new ParkingLot(1);
+        ParkingLot.ParkingLotListener owner =  mock(ParkingLot.ParkingLotListener.class);
+        ParkingLot.ParkingLotListener airportSecurity =  mock(ParkingLot.ParkingLotListener.class);
+        parkingLot.addListener(owner);
+        parkingLot.addListener(airportSecurity);
+        parkingLot.park();
+        verify(owner, times(1)).onParkingLotIsFull();
+        verify(airportSecurity, times(1)).onParkingLotIsFull();
+    }
+
 }
