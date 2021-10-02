@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class ParkingLotAttendant {
 
-    List<ParkingLot> parkingLots = new ArrayList<>();
+    // List<ParkingLot> parkingLots = new ArrayList<>();
     private List<Token> tokenList;
     List<ParkingLotListener> listeners;
 
